@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TALKVERSE AI - Cổng Luyện Tập Nói & Nghe Cho Học Sinh THPT</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Font Lexend -->
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Lexend', 'sans-serif'],
+                    },
+                    colors: {
+                        neonCyan: '#00F0FF',
+                        neonPurple: '#A855F7',
+                        neonOrange: '#FF5722',
+                        neonGreen: '#10B981',
+                        neonBlue: '#0284C7',
+                        darkBg: '#090D16',
+                        cardBg: '#111827'
+                    },
+                    boxShadow: {
+                        'glow-orange': '0 10px 30px -5px rgba(255, 87, 34, 0.5)',
+                        'glow-green': '0 10px 30px -5px rgba(16, 185, 129, 0.5)',
+                        'glow-blue': '0 10px 30px -5px rgba(2, 132, 199, 0.5)',
+                        'glow-purple': '0 10px 30px -5px rgba(168, 85, 247, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: #090D16;
+            color: #F3F4F6;
+        }
+
+        .hero-cyber-bg {
+            background: radial-gradient(circle at 50% 20%, #1E1B4B 0%, #0F172A 60%, #090D16 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-cyber-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 80% 20%, rgba(0, 240, 255, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 20% 80%, rgba(255, 87, 34, 0.12) 0%, transparent 45%);
+            pointer-events: none;
+        }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+
+        @keyframes float-reverse {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(10px) rotate(-2deg); }
+        }
+
+        .animate-float {
+            animation: float-slow 4s ease-in-out infinite;
+        }
+
+        .animate-float-rev {
+            animation: float-reverse 5s ease-in-out infinite;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F172A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+
+    <!-- 1. TOP HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('student')">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-orange-500 via-sky-400 to-purple-600 p-0.5 shadow-lg shadow-cyan-500/20 hover:scale-105 transition">
+                    <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                        <i class="fa-solid fa-comments text-cyan-400 text-xl"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-black text-2xl tracking-tight text-white block leading-none">
+                        TALK<span class="text-cyan-400">VERSE</span> <span class="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">AI</span>
+                    </span>
+                    <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase block mt-0.5">Nền Tảng Đối Thoại Thông Minh THPT</span>
+                </div>
+            </div>
+
+            <!-- View Switcher Tabs -->
+            <div class="flex items-center bg-slate-900 p-1.5 rounded-full border border-slate-800">
+                <button id="nav-btn-student" onclick="switchView('student')" class="px-5 py-2 rounded-full font-extrabold text-xs sm:text-sm transition flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md">
+                    <i class="fa-solid fa-graduation-cap"></i> Học sinh
+                </button>
+                <button id="nav-btn-teacher" onclick="switchView('teacher')" class="px-5 py-2 rounded-full font-extrabold text-xs sm:text-sm text-slate-400 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-chalkboard-user"></i> Trang Giáo viên
+                </button>
+            </div>
+
+            <!-- Header Quick Action -->
+            <div class="hidden sm:flex items-center gap-3">
+                <span id="role-badge" class="px-3 py-1 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800/60 font-bold text-xs">
+                    <i class="fa-solid fa-circle text-[8px] text-cyan-400 mr-1 animate-pulse"></i> Chế độ Học sinh
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN VIEW WRAPPER -->
+    <main class="flex-grow">
+
+        <!-- ========================================================================= -->
+        <!-- VIEW A: STUDENT HOMEPAGE & FUNCTIONAL CARDS                                -->
+        <!-- ========================================================================= -->
+        <div id="student-view" class="space-y-12 pb-16">
+            
+            <!-- HERO BANNER -->
+            <section class="hero-cyber-bg pt-10 pb-16 px-4 sm:px-6 lg:px-8 border-b border-slate-800/80">
+                <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    
+                    <!-- Hero Left Text -->
+                    <div class="lg:col-span-7 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 bg-slate-900/80 border border-cyan-500/30 px-4 py-1.5 rounded-full text-xs font-semibold text-cyan-300 mb-6 backdrop-blur-md">
+                            <span class="flex h-2 w-2 rounded-full bg-cyan-400 animate-ping"></span>
+                            <span>Đổi mới sáng tạo trong luyện tập Nói & Nghe Ngữ Văn THPT</span>
+                        </div>
+
+                        <!-- Refined Slogan -->
+                        <h1 class="text-2xl sm:text-4xl lg:text-4xl font-black uppercase tracking-tight text-white leading-tight">
+                            Phát triển tư duy, nâng tầm hùng biện cùng <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-pink-500 bg-clip-text text-transparent">TALKVERSE AI</span>
+                        </h1>
+
+                        <p class="mt-4 text-sm sm:text-base text-slate-300 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
+                            Môi trường giả lập đối thoại thông minh dành cho học sinh THPT. Rèn luyện kỹ năng phản biện, nói thuyết phục, lắng nghe thấu cảm và soi chiếu năng lực cùng AI Coach.
+                        </p>
+
+                        <div class="mt-8 flex flex-wrap justify-center lg:justify-start gap-4">
+                            <a href="#core-cards" class="px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-sm uppercase shadow-lg shadow-orange-500/25 hover:scale-105 transition active:scale-95 flex items-center gap-2">
+                                TRẢI NGHIỆM NGAY <i class="fa-solid fa-arrow-down-long"></i>
+                            </a>
+                            <button onclick="switchView('teacher')" class="px-6 py-4 rounded-full bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-200 hover:text-cyan-400 font-extrabold text-sm transition flex items-center gap-2">
+                                <i class="fa-solid fa-user-shield text-cyan-400"></i> Dành cho Giáo viên
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hero Right Illustration: Cartoon Student & AI Robot Mascot -->
+                    <div class="lg:col-span-5 flex justify-center relative">
+                        <div class="relative w-full max-w-md p-6 bg-slate-900/80 border border-slate-800 rounded-3xl backdrop-blur-xl shadow-2xl">
+                            
+                            <!-- Mascot Cartoon Illustration -->
+                            <div class="relative flex justify-center items-center py-2">
+                                <svg class="w-full h-56 sm:h-64 animate-float" viewBox="0 0 500 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="250" cy="175" r="130" fill="#0284C7" fill-opacity="0.2"/>
+                                    
+                                    <!-- Student SVG -->
+                                    <g id="StudentCartoon">
+                                        <path d="M140 280C140 230 170 210 200 210C230 210 260 230 260 280V310H140V280Z" fill="#2563EB"/>
+                                        <path d="M185 210L200 235L215 210H185Z" fill="#FFFFFF"/>
+                                        <path d="M197 225L200 260L203 225Z" fill="#EF4444"/>
+                                        <circle cx="200" cy="165" r="38" fill="#FDE047"/>
+                                        <circle cx="188" cy="160" r="4" fill="#0F172A"/>
+                                        <circle cx="212" cy="160" r="4" fill="#0F172A"/>
+                                        <circle cx="188" cy="160" r="9" stroke="#0F172A" stroke-width="2.5" fill="none"/>
+                                        <circle cx="212" cy="160" r="9" stroke="#0F172A" stroke-width="2.5" fill="none"/>
+                                        <path d="M197 160H203" stroke="#0F172A" stroke-width="2.5"/>
+                                        <path d="M190 180Q200 190 210 180" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                                    </g>
+
+                                    <!-- AI Robot Mascot SVG -->
+                                    <g id="RobotCartoon" class="animate-float-rev">
+                                        <ellipse cx="320" cy="265" rx="30" ry="7" fill="#00F0FF" fill-opacity="0.4"/>
+                                        <rect x="285" y="190" width="70" height="55" rx="18" fill="#FFFFFF" stroke="#00F0FF" stroke-width="3"/>
+                                        <rect x="300" y="202" width="40" height="28" rx="8" fill="#090D16"/>
+                                        <circle cx="312" cy="216" r="3.5" fill="#00F0FF"/>
+                                        <circle cx="328" cy="216" r="3.5" fill="#00F0FF"/>
+                                        <rect x="290" y="135" width="60" height="42" rx="14" fill="#FFFFFF" stroke="#00F0FF" stroke-width="3"/>
+                                        <rect x="300" y="145" width="40" height="22" rx="6" fill="#090D16"/>
+                                        <ellipse cx="310" cy="156" rx="3.5" ry="5" fill="#38BDF8"/>
+                                        <ellipse cx="330" cy="156" rx="3.5" ry="5" fill="#38BDF8"/>
+                                        <line x1="320" y1="135" x2="320" y2="120" stroke="#00F0FF" stroke-width="3" stroke-linecap="round"/>
+                                        <circle cx="320" cy="116" r="5" fill="#FF5722"/>
+                                    </g>
+                                </svg>
+
+                                <!-- Floating Speech Bubbles -->
+                                <div class="absolute -top-1 left-2 bg-slate-800 text-cyan-300 border border-cyan-500/40 px-3 py-1 rounded-2xl rounded-bl-none text-xs font-extrabold shadow-lg">
+                                    <i class="fa-solid fa-lightbulb text-amber-400"></i> Bạn nghĩ sao?
+                                </div>
+                                <div class="absolute bottom-3 right-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-3 py-1 rounded-2xl rounded-br-none text-xs font-black shadow-lg">
+                                    <i class="fa-solid fa-bolt"></i> Thuyết phục ngay!
+                                </div>
+                            </div>
+
+                            <!-- Footer badge in hero card -->
+                            <div class="mt-2 pt-3 border-t border-slate-800 flex justify-around text-center text-xs">
+                                <div>
+                                    <p class="text-amber-400 font-black"><i class="fa-solid fa-shield-halved"></i> An toàn</p>
+                                    <p class="text-slate-400 text-[11px]">Không phán xét</p>
+                                </div>
+                                <div class="border-r border-slate-800"></div>
+                                <div>
+                                    <p class="text-cyan-400 font-black"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Coach</p>
+                                    <p class="text-slate-400 text-[11px]">Phản hồi 24/7</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 4 CORE FUNCTIONAL CARDS SECTION (SLOTS 1, 2, 3, 4) -->
+            <section id="core-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="text-center mb-10">
+                    <span class="px-4 py-1.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800/80 font-black text-xs uppercase tracking-widest">
+                        Các Khung Chức Năng Cốt Lõi
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-black text-white mt-3">
+                        Lựa chọn phòng luyện tập của bạn
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    <!-- SLOT 1: AI ARENA -->
+                    <div class="rounded-3xl p-6 bg-gradient-to-b from-orange-500 via-orange-600 to-red-700 text-white shadow-xl hover:shadow-glow-orange transform hover:-translate-y-2 transition duration-300 flex flex-col justify-between border border-orange-400/30 relative">
+                        <div class="absolute -top-3 -left-3 w-10 h-10 rounded-full bg-slate-950 border-2 border-orange-400 text-orange-400 font-black text-lg flex items-center justify-center shadow-md">
+                            1
+                        </div>
+                        <div>
+                            <div class="w-full h-36 bg-orange-950/40 rounded-2xl flex items-center justify-center mb-5 border border-white/20 relative overflow-hidden">
+                                <i class="fa-solid fa-swords text-6xl text-amber-200"></i>
+                                <span class="absolute bottom-2 right-2 bg-orange-950/80 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">AI ARENA</span>
+                            </div>
+                            <h3 class="text-xl font-black text-center uppercase tracking-wide">
+                                Đấu trường phản biện
+                            </h3>
+                            <p class="text-center text-amber-200 text-xs font-bold mb-3">(AI Arena)</p>
+                            <p class="text-xs text-orange-100 text-center mb-6 leading-relaxed">
+                                Giả lập tranh luận phản biện trực tiếp với AI. Thử thách tư duy đa chiều và bảo vệ luận điểm cá nhân.
+                            </p>
+                        </div>
+                        <button onclick="openArenaModal()" class="w-full py-3.5 rounded-2xl bg-white text-orange-600 font-extrabold text-xs uppercase shadow-md hover:bg-orange-50 transition active:scale-95 flex items-center justify-center gap-2">
+                            BẮT ĐẦU ĐẤU! <i class="fa-solid fa-fire text-orange-500"></i>
+                        </button>
+                    </div>
+
+                    <!-- SLOT 2: PERSUADE LAB -->
+                    <div class="rounded-3xl p-6 bg-gradient-to-b from-emerald-500 via-teal-600 to-emerald-800 text-white shadow-xl hover:shadow-glow-green transform hover:-translate-y-2 transition duration-300 flex flex-col justify-between border border-emerald-400/30 relative">
+                        <div class="absolute -top-3 -left-3 w-10 h-10 rounded-full bg-slate-950 border-2 border-emerald-400 text-emerald-400 font-black text-lg flex items-center justify-center shadow-md">
+                            2
+                        </div>
+                        <div>
+                            <div class="w-full h-36 bg-emerald-950/40 rounded-2xl flex items-center justify-center mb-5 border border-white/20 relative overflow-hidden">
+                                <i class="fa-solid fa-bullhorn text-6xl text-emerald-100"></i>
+                                <span class="absolute bottom-2 right-2 bg-emerald-950/80 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">PERSUADE LAB</span>
+                            </div>
+                            <h3 class="text-xl font-black text-center uppercase tracking-wide">
+                                Xưởng thuyết phục
+                            </h3>
+                            <p class="text-center text-emerald-200 text-xs font-bold mb-3">(Persuade Lab)</p>
+                            <p class="text-xs text-emerald-100 text-center mb-6 leading-relaxed">
+                                Chọn các tình huống thực tế (nghiện điện thoại, trì hoãn, sợ phát biểu, điểm số) hoặc tự đề xuất tình huống riêng.
+                            </p>
+                        </div>
+                        <button onclick="openPersuadeModal()" class="w-full py-3.5 rounded-2xl bg-white text-teal-700 font-extrabold text-xs uppercase shadow-md hover:bg-emerald-50 transition active:scale-95 flex items-center justify-center gap-2">
+                            THỬ SỨC! <i class="fa-solid fa-comments text-teal-600"></i>
+                        </button>
+                    </div>
+
+                    <!-- SLOT 3: ACTIVE LISTENING -->
+                    <div class="rounded-3xl p-6 bg-gradient-to-b from-sky-500 via-blue-600 to-indigo-800 text-white shadow-xl hover:shadow-glow-blue transform hover:-translate-y-2 transition duration-300 flex flex-col justify-between border border-sky-400/30 relative">
+                        <div class="absolute -top-3 -left-3 w-10 h-10 rounded-full bg-slate-950 border-2 border-sky-400 text-sky-400 font-black text-lg flex items-center justify-center shadow-md">
+                            3
+                        </div>
+                        <div>
+                            <div class="w-full h-36 bg-blue-950/40 rounded-2xl flex items-center justify-center mb-5 border border-white/20 relative overflow-hidden">
+                                <i class="fa-solid fa-ear-listen text-6xl text-sky-100"></i>
+                                <span class="absolute bottom-2 right-2 bg-blue-950/80 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">ACTIVE LISTENING</span>
+                            </div>
+                            <h3 class="text-xl font-black text-center uppercase tracking-wide">
+                                Trạm lắng nghe
+                            </h3>
+                            <p class="text-center text-sky-200 text-xs font-bold mb-3">(Active Listening)</p>
+                            <p class="text-xs text-sky-100 text-center mb-6 leading-relaxed">
+                                3 Đoạn thoại tình huống thực tế: Áp lực điểm số, Mâu thuẫn nhóm, Cha mẹ không hiểu định hướng. Thực hành lắng nghe thấu cảm.
+                            </p>
+                        </div>
+                        <button onclick="openListeningModal()" class="w-full py-3.5 rounded-2xl bg-white text-blue-600 font-extrabold text-xs uppercase shadow-md hover:bg-sky-50 transition active:scale-95 flex items-center justify-center gap-2">
+                            LUYỆN TẬP! <i class="fa-solid fa-headphones text-blue-500"></i>
+                        </button>
+                    </div>
+
+                    <!-- SLOT 4: MIRROR -->
+                    <div class="rounded-3xl p-6 bg-gradient-to-b from-purple-600 via-purple-700 to-fuchsia-900 text-white shadow-xl hover:shadow-glow-purple transform hover:-translate-y-2 transition duration-300 flex flex-col justify-between border border-purple-400/30 relative">
+                        <div class="absolute -top-3 -left-3 w-10 h-10 rounded-full bg-slate-950 border-2 border-purple-400 text-purple-400 font-black text-lg flex items-center justify-center shadow-md">
+                            4
+                        </div>
+                        <div>
+                            <div class="w-full h-36 bg-purple-950/40 rounded-2xl flex items-center justify-center mb-5 border border-white/20 relative overflow-hidden">
+                                <i class="fa-solid fa-sliders text-6xl text-purple-100"></i>
+                                <span class="absolute bottom-2 right-2 bg-purple-950/80 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">MIRROR</span>
+                            </div>
+                            <h3 class="text-xl font-black text-center uppercase tracking-wide">
+                                Gương soi lời nói
+                            </h3>
+                            <p class="text-center text-purple-200 text-xs font-bold mb-3">(Mirror)</p>
+                            <p class="text-xs text-purple-100 text-center mb-6 leading-relaxed">
+                                Bảng chấm điểm chi tiết kèm giải thích rõ ràng lý do đạt điểm theo tiêu chí, chỉ ra điểm mạnh và gợi ý cải thiện.
+                            </p>
+                        </div>
+                        <button onclick="openMirrorModal()" class="w-full py-3.5 rounded-2xl bg-white text-purple-700 font-extrabold text-xs uppercase shadow-md hover:bg-purple-50 transition active:scale-95 flex items-center justify-center gap-2">
+                            XEM LẠI! <i class="fa-solid fa-chart-line text-purple-600"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- CALLOUT FOR TEACHERS -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+                <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/30 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-indigo-600/30 border border-indigo-400 flex items-center justify-center text-indigo-300 text-2xl shrink-0">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg sm:text-xl font-black text-white">Bạn là Giáo viên Ngữ văn?</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 mt-0.5">
+                                Xem bảng theo dõi tiến bộ học sinh, thiết lập tình huống bài tập và cấu hình tiêu chí chấm điểm Rubric.
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="switchView('teacher')" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs sm:text-sm uppercase shadow-md transition whitespace-nowrap">
+                        TRUY CẬP TRANG GIÁO VIÊN <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- VIEW B: TEACHER DASHBOARD & EVALUATION PORTAL                             -->
+        <!-- ========================================================================= -->
+        <div id="teacher-view" class="hidden space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Dashboard Banner -->
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <span class="px-3 py-1 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800 font-extrabold text-xs uppercase">
+                        Khu vực Quản lý Sư phạm
+                    </span>
+                    <h2 class="text-2xl font-black text-white mt-2">Bảng Theo Dõi Tiến Bộ & Đánh Giá Học Sinh</h2>
+                    <p class="text-xs text-slate-400">Lớp 11A1 - Môn Ngữ văn THPT · Niên khóa 2025 - 2026</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="alertModal('Xuất báo cáo', 'Đã tải xuống file báo cáo tổng hợp kết quả Nói & Nghe của Lớp 11A1 (Định dạng Excel).')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs">
+                        <i class="fa-solid fa-file-export mr-1"></i> Xuất Báo Cáo
+                    </button>
+                    <button onclick="switchView('student')" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs">
+                        <i class="fa-solid fa-eye mr-1"></i> Xem Giao diện Học sinh
+                    </button>
+                </div>
+            </div>
+
+            <!-- 1. Class Overview Metric Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-5 bg-slate-900 border border-slate-800 rounded-2xl">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Sĩ số lớp học</p>
+                    <p class="text-3xl font-black text-white mt-1">42 <span class="text-xs font-normal text-slate-500">học sinh</span></p>
+                    <p class="text-[11px] text-emerald-400 font-semibold mt-2"><i class="fa-solid fa-check-circle"></i> 100% Đã kích hoạt tài khoản</p>
+                </div>
+
+                <div class="p-5 bg-slate-900 border border-slate-800 rounded-2xl">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Điểm TB kỹ năng lớp</p>
+                    <p class="text-3xl font-black text-cyan-400 mt-1">8.4 <span class="text-xs font-normal text-slate-500">/ 10</span></p>
+                    <p class="text-[11px] text-cyan-300 font-semibold mt-2"><i class="fa-solid fa-arrow-trend-up"></i> Tăng +0.6 so với tuần trước</p>
+                </div>
+
+                <div class="p-5 bg-slate-900 border border-slate-800 rounded-2xl">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Tổng lượt luyện tập</p>
+                    <p class="text-3xl font-black text-amber-400 mt-1">348 <span class="text-xs font-normal text-slate-500">lượt</span></p>
+                    <p class="text-[11px] text-amber-300 font-semibold mt-2"><i class="fa-solid fa-fire"></i> Tương tác tích cực</p>
+                </div>
+
+                <div class="p-5 bg-slate-900 border border-slate-800 rounded-2xl">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Cần hỗ trợ thêm</p>
+                    <p class="text-3xl font-black text-rose-400 mt-1">3 <span class="text-xs font-normal text-slate-500">học sinh</span></p>
+                    <p class="text-[11px] text-rose-300 font-semibold mt-2"><i class="fa-solid fa-circle-exclamation"></i> Cần rèn kỹ năng Lắng nghe</p>
+                </div>
+            </div>
+
+            <!-- 2. Student Evaluation Roster Table -->
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div>
+                        <h3 class="text-lg font-black text-white">Danh Sách Đánh Giá Học Sinh</h3>
+                        <p class="text-xs text-slate-400">Soi chiếu kết quả thực hành theo tiêu chí Rubric Bộ Giáo dục & Đào tạo</p>
+                    </div>
+                    <div class="w-full sm:w-auto flex gap-2">
+                        <input type="text" placeholder="Tìm tên học sinh..." class="px-4 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-cyan-500 w-full sm:w-64">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">Học sinh</th>
+                                <th class="p-3">Số lượt làm</th>
+                                <th class="p-3">Lý lẽ & Bằng chứng</th>
+                                <th class="p-3">Thấu cảm & Lắng nghe</th>
+                                <th class="p-3">Sức thuyết phục</th>
+                                <th class="p-3">Điểm TB</th>
+                                <th class="p-3">Xếp loại</th>
+                                <th class="p-3 text-right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-slate-300 font-medium">
+                            <tr class="hover:bg-slate-800/50 transition">
+                                <td class="p-3 font-extrabold text-white flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-full bg-cyan-600 flex items-center justify-center text-xs font-black">AN</div>
+                                    Nguyễn Văn An
+                                </td>
+                                <td class="p-3">12 lượt</td>
+                                <td class="p-3 text-cyan-400 font-bold">8.5</td>
+                                <td class="p-3 text-emerald-400 font-bold">9.0</td>
+                                <td class="p-3 text-purple-400 font-bold">8.0</td>
+                                <td class="p-3 font-extrabold text-white">8.5</td>
+                                <td class="p-3"><span class="px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold">Xuất Sắc</span></td>
+                                <td class="p-3 text-right">
+                                    <button onclick="viewStudentReport('Nguyễn Văn An', '8.5', '9.0', '8.0')" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition">Xem chi tiết</button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-800/50 transition">
+                                <td class="p-3 font-extrabold text-white flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-full bg-orange-600 flex items-center justify-center text-xs font-black">BA</div>
+                                    Trần Thị Bảo Anh
+                                </td>
+                                <td class="p-3">9 lượt</td>
+                                <td class="p-3 text-cyan-400 font-bold">8.0</td>
+                                <td class="p-3 text-emerald-400 font-bold">8.5</td>
+                                <td class="p-3 text-purple-400 font-bold">8.5</td>
+                                <td class="p-3 font-extrabold text-white">8.3</td>
+                                <td class="p-3"><span class="px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800 font-bold">Giỏi</span></td>
+                                <td class="p-3 text-right">
+                                    <button onclick="viewStudentReport('Trần Thị Bảo Anh', '8.0', '8.5', '8.5')" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition">Xem chi tiết</button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-800/50 transition">
+                                <td class="p-3 font-extrabold text-white flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center text-xs font-black">CU</div>
+                                    Lê Hoàng Cường
+                                </td>
+                                <td class="p-3">5 lượt</td>
+                                <td class="p-3 text-cyan-400 font-bold">6.5</td>
+                                <td class="p-3 text-emerald-400 font-bold">6.0</td>
+                                <td class="p-3 text-purple-400 font-bold">6.5</td>
+                                <td class="p-3 font-extrabold text-white">6.3</td>
+                                <td class="p-3"><span class="px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-800 font-bold">Khá - Cần hỗ trợ</span></td>
+                                <td class="p-3 text-right">
+                                    <button onclick="viewStudentReport('Lê Hoàng Cường', '6.5', '6.0', '6.5')" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition">Xem chi tiết</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. Assignment & Rubric Tools -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Task Publisher -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
+                    <h3 class="text-base font-black text-white mb-2"><i class="fa-solid fa-plus-circle text-cyan-400 mr-2"></i> Giao Nhiệm Vụ / Thử Thách Mới</h3>
+                    <p class="text-xs text-slate-400 mb-4">Tạo đề bài thuyết phục hoặc tranh luận mới cho học sinh thực hành</p>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Tên chủ đề thử thách</label>
+                            <input type="text" placeholder="Ví dụ: Thuyết phục bạn đọc sách thay vì lướt TikTok..." class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Chế độ áp dụng</label>
+                            <select class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-cyan-500">
+                                <option>Xưởng thuyết phục (Persuade Lab)</option>
+                                <option>Đấu trường phản biện (AI Arena)</option>
+                                <option>Trạm lắng nghe (Active Listening)</option>
+                            </select>
+                        </div>
+                        <button onclick="alertModal('Đã tạo nhiệm vụ', 'Bài tập mới đã được cập nhật cho toàn bộ học sinh Lớp 11A1!')" class="w-full py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs uppercase transition">
+                            XUẤT BÀI TẬP MỚI
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AI Guardrails Config -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
+                    <h3 class="text-base font-black text-white mb-2"><i class="fa-solid fa-shield-halved text-emerald-400 mr-2"></i> Cấu Hình An Toàn AI (Guardrails)</h3>
+                    <p class="text-xs text-slate-400 mb-4">Thiết lập giới hạn tương tác AI đảm bảo môi trường học tập chuẩn mực</p>
+                    <div class="space-y-3 text-xs">
+                        <label class="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800 cursor-pointer">
+                            <span>Lọc từ ngữ không chuẩn mực & công kích</span>
+                            <input type="checkbox" checked class="w-4 h-4 text-cyan-500 rounded bg-slate-900">
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800 cursor-pointer">
+                            <span>Giới hạn chủ đề phù hợp với tâm lý lứa tuổi THPT</span>
+                            <input type="checkbox" checked class="w-4 h-4 text-cyan-500 rounded bg-slate-900">
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800 cursor-pointer">
+                            <span>Bắt buộc AI phân tích phản hồi theo Rubric Bộ GD&ĐT</span>
+                            <input type="checkbox" checked class="w-4 h-4 text-cyan-500 rounded bg-slate-900">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- 4. MODALS & INTERACTIVE PRACTICE WORKSPACES -->
+
+    <!-- MODAL 1: XƯỞNG THUYẾT PHỤC (PERSUADE LAB) -->
+    <div id="persuade-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-slate-900 border-2 border-emerald-500/50 rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('persuade-modal')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center font-bold">✕</button>
+
+            <div class="text-center mb-6">
+                <span class="px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 text-xs font-black uppercase">Khung Chức Năng 2</span>
+                <h3 class="text-2xl font-black text-white mt-1">XƯỞNG THUYẾT PHỤC (PERSUADE LAB)</h3>
+                <p class="text-xs text-slate-400 mt-1">Chọn một trong các tình huống thực tế dưới đây hoặc tự đề xuất chủ đề để luyện tập:</p>
+            </div>
+
+            <!-- 4 Quick Choice Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                <div id="opt-1" onclick="selectScenario(1, 'Thuyết phục một người bạn từ bỏ thói quen sử dụng điện thoại quá nhiều.')" 
+                     class="scenario-card cursor-pointer p-4 rounded-2xl bg-slate-950 border border-slate-800 hover:border-emerald-400 transition flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-rose-950 text-rose-400 flex items-center justify-center text-lg shrink-0">
+                        <i class="fa-solid fa-mobile-screen"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-white">Nghiện điện thoại</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Thuyết phục bạn từ bỏ thói quen lướt điện thoại liên tục.</p>
+                    </div>
+                </div>
+
+                <div id="opt-2" onclick="selectScenario(2, 'Thuyết phục một người bạn từ bỏ thói quen trì hoãn việc học.')" 
+                     class="scenario-card cursor-pointer p-4 rounded-2xl bg-slate-950 border border-slate-800 hover:border-emerald-400 transition flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-amber-950 text-amber-400 flex items-center justify-center text-lg shrink-0">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-white">Trì hoãn công việc</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Thuyết phục bạn lập kế hoạch và dừng trì hoãn.</p>
+                    </div>
+                </div>
+
+                <div id="opt-3" onclick="selectScenario(3, 'Thuyết phục bạn vượt qua nỗi sợ phát biểu trước đám đông.')" 
+                     class="scenario-card cursor-pointer p-4 rounded-2xl bg-slate-950 border border-slate-800 hover:border-emerald-400 transition flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-950 text-emerald-400 flex items-center justify-center text-lg shrink-0">
+                        <i class="fa-solid fa-microphone-slash"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-white">Sợ nói trước đám đông</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Thuyết phục bạn tự tin phát biểu ý kiến cá nhân.</p>
+                    </div>
+                </div>
+
+                <div id="opt-4" onclick="selectScenario(4, 'Thuyết phục bạn thay đổi quan niệm đam mê điểm số quá mức.')" 
+                     class="scenario-card cursor-pointer p-4 rounded-2xl bg-slate-950 border border-slate-800 hover:border-emerald-400 transition flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-purple-950 text-purple-400 flex items-center justify-center text-lg shrink-0">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-white">Đam mê điểm số</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Thuyết phục bạn nhìn nhận điểm số không phải tất cả.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Proposal Input -->
+            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 mb-6">
+                <label class="block text-xs font-bold text-cyan-300 mb-2">
+                    <i class="fa-solid fa-pen-to-square mr-1"></i> Hoặc đề xuất tình huống riêng phù hợp với bạn:
+                </label>
+                <div class="flex gap-2">
+                    <input type="text" id="custom-scenario" placeholder="Nhập tình huống của bạn tại đây..." 
+                           class="flex-grow px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:border-cyan-400">
+                    <button onclick="submitCustomScenario()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs uppercase transition shrink-0">
+                        ÁP DỤNG
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button onclick="startPersuadePractice()" class="px-8 py-3.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-sm uppercase shadow-lg shadow-emerald-500/25 transition">
+                    BẮT ĐẦU LUYỆN TẬP <i class="fa-solid fa-play ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: GƯƠNG SOI LỜI NÓI (MIRROR WITH DETAILED EVALUATION EXPLANATIONS) -->
+    <div id="mirror-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-slate-900 border-2 border-purple-500/50 rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('mirror-modal')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center font-bold">✕</button>
+
+            <div class="text-center mb-6">
+                <span class="px-3 py-1 rounded-full bg-purple-950 text-purple-300 border border-purple-800 text-xs font-black uppercase">Khung Chức Năng 4</span>
+                <h3 class="text-2xl font-black text-white mt-1">GƯƠNG SOI LỜI NÓI (MIRROR)</h3>
+                <p class="text-xs text-slate-400 mt-1">Giải thích chi tiết lý do đạt điểm số theo tiêu chí đánh giá chuẩn</p>
+            </div>
+
+            <!-- Score Rubric Overview Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                <div class="p-4 bg-slate-950 border border-purple-900/60 rounded-2xl text-center">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Lý lẽ & Bằng chứng</p>
+                    <p class="text-3xl font-black text-purple-400 my-1">8.5 <span class="text-xs text-slate-500 font-normal">/ 10</span></p>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 font-bold border border-purple-800">Khá Giỏi</span>
+                </div>
+
+                <div class="p-4 bg-slate-950 border border-purple-900/60 rounded-2xl text-center">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Thấu cảm & Lắng nghe</p>
+                    <p class="text-3xl font-black text-emerald-400 my-1">9.0 <span class="text-xs text-slate-500 font-normal">/ 10</span></p>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 font-bold border border-emerald-800">Xuất Sắc</span>
+                </div>
+
+                <div class="p-4 bg-slate-950 border border-purple-900/60 rounded-2xl text-center">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase">Sức thuyết phục & Ngữ điệu</p>
+                    <p class="text-3xl font-black text-cyan-400 my-1">8.0 <span class="text-xs text-slate-500 font-normal">/ 10</span></p>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 font-bold border border-cyan-800">Tốt</span>
+                </div>
+            </div>
+
+            <!-- Explicit Reasoning and Explanation Section -->
+            <div class="space-y-4 text-xs text-slate-300 bg-slate-950 p-5 rounded-2xl border border-slate-800 mb-6">
+                <h4 class="font-black text-purple-300 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass-chart text-purple-400"></i> GIẢI THÍCH CHI TIẾT TỪ AI COACH:
+                </h4>
+
+                <div class="border-l-4 border-emerald-500 pl-3 py-1">
+                    <p class="font-bold text-emerald-400 text-xs">1. Vì sao Thấu cảm & Lắng nghe đạt 9.0 điểm?</p>
+                    <p class="text-slate-400 mt-0.5">Bạn đã thừa nhận cảm xúc của đối phương trước khi đưa ra lời khuyên. Thể hiện thái độ tôn trọng, không áp đặt ý kiến cá nhân.</p>
+                </div>
+
+                <div class="border-l-4 border-amber-500 pl-3 py-1">
+                    <p class="font-bold text-amber-400 text-xs">2. Vì sao Lý lẽ & Bằng chứng đạt 8.5 điểm?</p>
+                    <p class="text-slate-400 mt-0.5">Lý lẽ đưa ra chặt chẽ, tuy nhiên cần bổ sung thêm dẫn chứng số liệu hoặc câu chuyện thực tế để tăng độ thuyết phục.</p>
+                </div>
+
+                <div class="border-l-4 border-cyan-500 pl-3 py-1">
+                    <p class="font-bold text-cyan-400 text-xs">3. Gợi ý hành động cải thiện lượt tiếp theo:</p>
+                    <p class="text-slate-400 mt-0.5">Hãy sử dụng mẫu câu gợi mở: <em>"Tớ hiểu cảm giác của cậu khi... Tuy nhiên nếu mình làm theo cách này thì..."</em></p>
+                </div>
+            </div>
+
+            <button onclick="closeModal('mirror-modal')" class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-black text-xs uppercase transition">
+                ĐÓNG BÁO CÁO
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 3: ARENA -->
+    <div id="arena-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-slate-900 border-2 border-orange-500/50 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative">
+            <button onclick="closeModal('arena-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold">✕</button>
+            <h3 class="text-2xl font-black text-orange-400 uppercase mb-2">Đấu trường phản biện (AI Arena)</h3>
+            <p class="text-xs text-slate-400 mb-4 font-semibold">Chọn chủ đề có nhiều góc nhìn trái chiều để tranh luận cùng AI:</p>
+
+            <div class="space-y-3 mb-6">
+                <button onclick="startArenaPractice('Có nên cấm hoàn toàn học sinh sử dụng điện thoại tại trường?')" class="w-full p-3.5 text-left rounded-2xl bg-slate-950 border border-slate-800 hover:border-orange-500 text-white font-bold text-xs transition flex items-center gap-3">
+                    <span class="text-xl">🔥</span>
+                    <span>Có nên cấm hoàn toàn điện thoại tại trường học?</span>
+                </button>
+                <button onclick="startArenaPractice('AI có đang làm mai mọt khả năng tư duy độc lập của học sinh?')" class="w-full p-3.5 text-left rounded-2xl bg-slate-950 border border-slate-800 hover:border-orange-500 text-white font-bold text-xs transition flex items-center gap-3">
+                    <span class="text-xl">🔥</span>
+                    <span>AI làm mai mọt hay nâng cao tư duy học sinh?</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: ACTIVE LISTENING (3 INTERACTIVE DIALOGUE SCENARIOS) -->
+    <div id="listening-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-slate-900 border-2 border-sky-500/50 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('listening-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold">✕</button>
+            <div class="text-center mb-6">
+                <span class="px-3 py-1 rounded-full bg-sky-950 text-sky-300 border border-sky-800 text-xs font-black uppercase">Khung Chức Năng 3</span>
+                <h3 class="text-2xl font-black text-sky-400 uppercase mt-1">Trạm lắng nghe (Active Listening)</h3>
+                <p class="text-xs text-slate-400 mt-1">Luyện tập lắng nghe thấu cảm qua 3 đoạn thoại tình huống thực tế của học sinh THPT:</p>
+            </div>
+
+            <!-- 3 Dialogue Scenarios Selection -->
+            <div class="space-y-3 mb-6">
+                <!-- Scenario 1 -->
+                <div onclick="startListeningScenario(1)" class="cursor-pointer p-4 rounded-2xl bg-slate-950 border border-slate-800 hover:border-sky-400 transition flex items-start gap-4 group">
+                    <div class="w-10 h-10 rounded-2xl bg-sky-950 border border-sky-800 text-sky-400 flex items-center justify-center text-lg shrink-0 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded bg-sky-950 text-sky-300 text-[10px] font-black border border-sky-800">Đoạn thoại 1</span>
+                            <h4 class="text-xs font-black text-white">Bạn bè bị áp lực điểm số & kỳ vọng gia đình</h4>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">Nghe chia sẻ bế tắc của bạn học khi đạt điểm thấp và áp lực từ bố mẹ để bóc tách Sự thật vs Suy diễn.</p>
+                    </div>
+                </div>
+
+                <!-- Scenario 2 -->
+                <div onclick="startListeningScenario(2)" class="cursor-pointer p-4 rounded-2xl bg-slate-950 border border-slate-800 hover:border-sky-400 transition flex items-start gap-4 group">
+                    <div class="w-10 h-10 rounded-2xl bg-indigo-950 border border-indigo-800 text-indigo-400 flex items-center justify-center text-lg shrink-0 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-people-group"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 text-[10px] font-black border border-indigo-800">Đoạn thoại 2</span>
+                            <h4 class="text-xs font-black text-white">Mâu thuẫn phân công công việc bài tập nhóm</h4>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">Nghe lời phàn nàn của nhóm trưởng khi thành viên làm qua loa để lắng nghe thấu cảm và xoa dịu xung đột.</p>
+                    </div>
+                </div>
+
+                <!-- Scenario 3 -->
+                <div onclick="startListeningScenario(3)" class="cursor-pointer p-4 rounded-2xl bg-slate-950 border border-slate-800 hover:border-sky-400 transition flex items-start gap-4 group">
+                    <div class="w-10 h-10 rounded-2xl bg-purple-950 border border-purple-800 text-purple-400 flex items-center justify-center text-lg shrink-0 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-compass-drafting"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded bg-purple-950 text-purple-300 text-[10px] font-black border border-purple-800">Đoạn thoại 3</span>
+                            <h4 class="text-xs font-black text-white">Phụ huynh chưa thấu hiểu định hướng ngành nghề</h4>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">Lắng nghe mâu thuẫn giữa mong muốn chọn ngành thiết kế đồ họa của bạn học và định hướng sư phạm của bố mẹ.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button onclick="closeModal('listening-modal')" class="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs uppercase">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: DETAILED STUDENT REPORT (TEACHER VIEW) -->
+    <div id="student-report-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-slate-900 border-2 border-indigo-500/50 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('student-report-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold">✕</button>
+            <h3 id="report-student-name" class="text-xl font-black text-white mb-1">Báo cáo học sinh: Nguyễn Văn An</h3>
+            <p class="text-xs text-slate-400 mb-4">Lịch sử tương tác và đánh giá chi tiết từ AI Coach</p>
+
+            <div class="space-y-3 text-xs bg-slate-950 p-4 rounded-2xl border border-slate-800 mb-6">
+                <p class="text-indigo-300 font-bold">Lịch sử thực hành gần nhất: Xưởng Thuyết Phục</p>
+                <div class="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                    <p class="text-slate-400 italic">"Tớ hiểu rằng chơi game trực tuyến rất vui, nhưng nếu chúng mình dành 1 tiếng buổi tối học nhóm thì kết quả sẽ tốt hơn..."</p>
+                </div>
+                <p class="text-emerald-400 font-bold mt-2">Đánh giá sư phạm từ AI:</p>
+                <p class="text-slate-300">Học sinh thể hiện khả năng thấu cảm tốt, không gây áp lực cho người nghe. Cần hướng dẫn thêm cách lập dàn ý lý lẽ theo mô hình ARE (Assertion - Reason - Evidence).</p>
+            </div>
+
+            <button onclick="closeModal('student-report-modal')" class="w-full py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs uppercase">Đóng Hồ Sơ</button>
+        </div>
+    </div>
+
+    <!-- GENERAL ALERT MODAL -->
+    <div id="general-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 text-center">
+            <h4 id="gen-modal-title" class="text-lg font-bold text-white mb-2">Thông báo</h4>
+            <p id="gen-modal-msg" class="text-xs text-slate-300 mb-6"></p>
+            <button onclick="closeModal('general-modal')" class="px-6 py-2 rounded-xl bg-cyan-600 text-white font-bold text-xs uppercase">Đóng</button>
+        </div>
+    </div>
+
+    <!-- REAL-TIME INTERACTIVE PRACTICE ROOM -->
+    <section id="practice-room" class="hidden min-h-[85vh] max-w-6xl mx-auto px-4 py-6">
+        <div class="bg-slate-900 rounded-3xl shadow-2xl border border-slate-800 overflow-hidden flex flex-col h-[80vh]">
+            
+            <div class="p-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <button onclick="exitPracticeRoom()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <div>
+                        <h3 id="room-title" class="font-bold text-sm text-white">Xưởng Thuyết Phục</h3>
+                        <p id="room-subtitle" class="text-[11px] text-slate-400">Tình huống đang luyện tập...</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span id="listening-badge" class="hidden px-2.5 py-1 rounded-full bg-sky-950 text-sky-300 border border-sky-800 text-[10px] font-bold">
+                        <i class="fa-solid fa-headphones mr-1"></i> Lắng nghe thấu cảm
+                    </span>
+                    <button onclick="exitPracticeRoom()" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold">Thoát</button>
+                </div>
+            </div>
+
+            <div id="chat-messages" class="flex-grow p-4 sm:p-6 overflow-y-auto space-y-4 bg-slate-950">
+                <!-- Messages dynamic render -->
+            </div>
+
+            <div class="p-4 bg-slate-900 border-t border-slate-800">
+                <form onsubmit="handleUserSubmit(event)" class="flex gap-2">
+                    <input type="text" id="user-input" placeholder="Nhập câu thuyết phục / phản hồi lắng nghe của bạn..." required 
+                           class="flex-grow px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-xs sm:text-sm text-white focus:outline-none focus:border-cyan-500">
+                    <button type="submit" class="px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs uppercase shrink-0">
+                        Gửi <i class="fa-solid fa-paper-plane ml-1"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 text-slate-500 py-8 px-4 sm:px-6 lg:px-8 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
+            <p class="font-medium text-slate-400">TALKVERSE AI © 2026 - Cổng Luyện Tập Đối Thoại Dành Cho Học Sinh THPT</p>
+            <p>Hỗ trợ Giáo viên Ngữ Văn & Nhà Trường</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let selectedScenarioText = "Thuyết phục một người bạn từ bỏ thói quen sử dụng điện thoại quá nhiều.";
+        let currentMode = "PERSUADE";
+        let listeningScenarioId = 1;
+        let turnCount = 0;
+
+        // 3 Listening Scenarios Data
+        const listeningScenarios = {
+            1: {
+                title: "Trạm Lắng Nghe - Đoạn thoại 1",
+                subtitle: "Tình huống: Bạn học bị áp lực điểm số & kỳ vọng gia đình",
+                dialogue: `🔊 **[Đoạn thoại nghe được]:**\n*"Tớ lại vừa bị điểm 5 môn Toán hôm nay... Bố mẹ tớ luôn muốn tớ phải vào top 3 của lớp. Tớ đã thức tới 2h sáng mỗi đêm nhưng có vẻ tớ thật ngu ngốc và chả làm được tích sự gì..."*`,
+                aiPrompt: `Bạn vừa lắng nghe lời tâm sự trên. Hãy đưa ra câu phản hồi thể hiện bạn đã **Lắng nghe thấu cảm** (Phân biệt Fact: Điểm 5 môn Toán vs Inference: "Tớ ngu ngốc").`
+            },
+            2: {
+                title: "Trạm Lắng Nghe - Đoạn thoại 2",
+                subtitle: "Tình huống: Mâu thuẫn phân công bài tập nhóm",
+                dialogue: `🔊 **[Đoạn thoại nghe được]:**\n*"Mệt mỏi thật sự! Trong nhóm 5 người mà chỉ có tớ với cậu làm slide với chuẩn bị nội dung. Các bạn còn lại thì viện lý do bận học thêm để không làm gì. Tớ muốn gạch tên các bạn ấy ra khỏi nhóm luôn!"*`,
+                aiPrompt: `Hãy lắng nghe cảm xúc giận dữ của nhóm trưởng. Đưa ra lời phản hồi gọi tên được cảm xúc người nói và đề xuất hướng xử lý văn minh.`
+            },
+            3: {
+                title: "Trạm Lắng Nghe - Đoạn thoại 3",
+                subtitle: "Tình huống: Phụ huynh chưa thấu hiểu định hướng ngành nghề",
+                dialogue: `🔊 **[Đoạn thoại nghe được]:**\n*"Tớ rất mê thiết kế đồ họa và muốn thi ngành Mỹ thuật công nghiệp, nhưng tối qua bố mẹ tớ lại gay gắt bắt tớ phải thi Sư phạm. Bố mẹ bảo làm nghệ thuật sau này sẽ chết đói và không thương bố mẹ..."*`,
+                aiPrompt: `Hãy lắng nghe xung đột định hướng của bạn. Đưa ra phản hồi xoa dịu áp lực cảm xúc và giúp bạn tách bạch mong muốn của bản thân.`
+            }
+        };
+
+        function switchView(view) {
+            const studentView = document.getElementById('student-view');
+            const teacherView = document.getElementById('teacher-view');
+            const btnStudent = document.getElementById('nav-btn-student');
+            const btnTeacher = document.getElementById('nav-btn-teacher');
+            const roleBadge = document.getElementById('role-badge');
+
+            if(view === 'teacher') {
+                studentView.classList.add('hidden');
+                teacherView.classList.remove('hidden');
+                btnTeacher.className = "px-5 py-2 rounded-full font-extrabold text-xs sm:text-sm transition flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md";
+                btnStudent.className = "px-5 py-2 rounded-full font-extrabold text-xs sm:text-sm text-slate-400 hover:text-white transition flex items-center gap-2";
+                roleBadge.innerHTML = `<i class="fa-solid fa-circle text-[8px] text-indigo-400 mr-1 animate-pulse"></i> Chế độ Giáo viên`;
+            } else {
+                teacherView.classList.add('hidden');
+                studentView.classList.remove('hidden');
+                btnStudent.className = "px-5 py-2 rounded-full font-extrabold text-xs sm:text-sm transition flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md";
+                btnTeacher.className = "px-5 py-2 rounded-full font-extrabold text-xs sm:text-sm text-slate-400 hover:text-white transition flex items-center gap-2";
+                roleBadge.innerHTML = `<i class="fa-solid fa-circle text-[8px] text-cyan-400 mr-1 animate-pulse"></i> Chế độ Học sinh`;
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openPersuadeModal() { document.getElementById('persuade-modal').classList.remove('hidden'); }
+        function openArenaModal() { document.getElementById('arena-modal').classList.remove('hidden'); }
+        function openListeningModal() { document.getElementById('listening-modal').classList.remove('hidden'); }
+        function openMirrorModal() { document.getElementById('mirror-modal').classList.remove('hidden'); }
+
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function selectScenario(idx, text) {
+            selectedScenarioText = text;
+            document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('border-emerald-400', 'bg-slate-900'));
+            const selectedCard = document.getElementById(`opt-${idx}`);
+            if(selectedCard) selectedCard.classList.add('border-emerald-400', 'bg-slate-900');
+        }
+
+        function submitCustomScenario() {
+            const val = document.getElementById('custom-scenario').value.trim();
+            if(val) {
+                selectedScenarioText = "Thuyết phục bạn về: " + val;
+                alertModal("Đã áp dụng đề xuất", `Tình huống đề xuất: "${val}"`);
+            }
+        }
+
+        function startPersuadePractice() {
+            closeModal('persuade-modal');
+            currentMode = "PERSUADE";
+            turnCount = 0;
+            initPracticeRoom("Xưởng Thuyết Phục", selectedScenarioText, [
+                { sender: "ai", text: `Chào bạn! Tớ chính là người bạn trong tình huống: *"${selectedScenarioText}"*.\n\nTớ thấy thói quen này tớ duy trì lâu rồi và cũng không ảnh hưởng nhiều lắm. Sao cậu lại muốn tớ thay đổi?` }
+            ]);
+        }
+
+        function startArenaPractice(topic) {
+            closeModal('arena-modal');
+            currentMode = "ARENA";
+            turnCount = 0;
+            initPracticeRoom("Đấu Trường Phản Biện", topic, [
+                { sender: "ai", text: `Chào đối thủ! Chủ đề hôm nay: *"${topic}"*.\n\nTôi đại diện cho phía phản đối. Bạn hãy nêu luận điểm đầu tiên kèm bằng chứng cụ thể để thuyết phục tôi!` }
+            ]);
+        }
+
+        function startListeningScenario(scenId) {
+            closeModal('listening-modal');
+            currentMode = "LISTENING";
+            listeningScenarioId = scenId;
+            turnCount = 0;
+
+            const scData = listeningScenarios[scenId];
+            initPracticeRoom(scData.title, scData.subtitle, [
+                { sender: "ai", text: `${scData.dialogue}\n\n💡 **Nhiệm vụ:** ${scData.aiPrompt}` }
+            ]);
+            document.getElementById('listening-badge').classList.remove('hidden');
+        }
+
+        function initPracticeRoom(title, subtitle, msgs) {
+            document.getElementById('student-view').classList.add('hidden');
+            document.getElementById('practice-room').classList.remove('hidden');
+            document.getElementById('room-title').innerText = title;
+            document.getElementById('room-subtitle').innerText = subtitle;
+            document.getElementById('listening-badge').classList.add('hidden');
+
+            const chat = document.getElementById('chat-messages');
+            chat.innerHTML = '';
+            msgs.forEach(m => appendMessage(m.sender, m.text));
+        }
+
+        function exitPracticeRoom() {
+            document.getElementById('practice-room').classList.add('hidden');
+            document.getElementById('student-view').classList.remove('hidden');
+        }
+
+        function appendMessage(sender, text) {
+            const chat = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+
+            const bubble = document.createElement('div');
+            bubble.className = `max-w-[85%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed ${
+                sender === 'user' ? 'bg-cyan-600 text-white rounded-br-none shadow-lg' : 'bg-slate-900 border border-slate-800 text-slate-200 rounded-bl-none shadow-lg'
+            }`;
+            bubble.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/\n/g, '<br>');
+
+            div.appendChild(bubble);
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // FLEXIBLE MULTI-TURN AI CHATBOT LOGIC
+        function generateDynamicAIResponse(userText) {
+            turnCount++;
+            const textLower = userText.toLowerCase();
+            const wordCount = userText.trim().split(/\s+/).length;
+
+            // 1. PERSUADE LAB FLEXIBLE AI
+            if (currentMode === "PERSUADE") {
+                if (wordCount < 6) {
+                    return `**AI Bạn Học:** Cậu nói ngắn gọn quá, tớ chưa cảm nhận được sự chân thành hay giải pháp cụ thể nào... Cậu có thể giải thích rõ hơn tớ sẽ nhận được lợi ích gì nếu làm theo lời cậu không?`;
+                }
+
+                // Check for empathy/understanding
+                const hasEmpathy = textLower.includes("tớ hiểu") || textLower.includes("thông cảm") || textLower.includes("chia sẻ") || textLower.includes("biết là");
+                // Check for concrete plan/solution
+                const hasSolution = textLower.includes("kế hoạch") || textLower.includes("thay vì") || textLower.includes("mỗi ngày") || textLower.includes("thử") || textLower.includes("bắt đầu");
+
+                if (hasEmpathy && hasSolution) {
+                    return `**AI Bạn Học:** *(Tỏ ra dịu giọng & gật gù)*\nNghe cậu phân tích vừa có lý lại vừa tôn trọng cảm xúc của tớ... Tớ cũng từng thử thay đổi nhưng hay bỏ dở giữa chừng. Cậu có thể đồng hành hoặc nhắc nhở tớ trong 3 ngày đầu tiên không?`;
+                } else if (hasEmpathy && !hasSolution) {
+                    return `**AI Bạn Học:** Cảm ơn cậu vì đã thông cảm cho tớ! Đúng là tớ cũng lo lắng về vấn đề đó. Nhưng nếu bỏ thói quen này ngay thì tớ thấy hơi trống trải, cậu có gợi ý hành động nào nhỏ nhỏ dễ làm ngay không?`;
+                } else if (!hasEmpathy && hasSolution) {
+                    return `**AI Bạn Học:** Giải pháp cậu đưa ra nghe có vẻ hay, nhưng cậu nói nghe hơi áp đặt giống như đang ra lệnh cho tớ vậy... Cậu có thể nói một cách nhẹ nhàng hơn được không?`;
+                } else {
+                    if (turnCount >= 3) {
+                        return `**AI Bạn Học:** *(Dần bị thuyết phục)*\nSau vài lượt trò chuyện, tớ thấy cậu thực sự quan tâm đến tớ. Được rồi, tớ sẽ thử áp dụng lời khuyên của cậu từ hôm nay xem sao! Cảm ơn cậu rất nhiều! 🎉`;
+                    }
+                    return `**AI Bạn Học:** Nghe cũng có lý đấy! Nhưng tớ vẫn còn chút ngần ngại. Nếu tớ làm theo lời cậu mà không thấy hiệu quả thì sao nào?`;
+                }
+            }
+
+            // 2. ACTIVE LISTENING FLEXIBLE AI
+            else if (currentMode === "LISTENING") {
+                const hasEmpathyKeyword = textLower.includes("tớ hiểu") || textLower.includes("chia sẻ") || textLower.includes("thông cảm") || textLower.includes("đừng tự trách") || textLower.includes("cùng nhau");
+                const hasFactKeyword = textLower.includes("điểm") || textLower.includes("môn") || textLower.includes("sự thật") || textLower.includes("kết quả") || textLower.includes("thực tế");
+
+                if (listeningScenarioId === 1) {
+                    if (hasEmpathyKeyword && hasFactKeyword) {
+                        return `🎯 **AI Coach Phân Tích Lắng Nghe:**\n\n- **Đánh giá lắng nghe:** ⭐⭐⭐⭐⭐ (Xuất sắc!)\n- **Điểm mạnh:** Bạn đã bóc tách rất chuẩn: *Điểm 5 Toán* chỉ là một kết quả kiểm tra (Fact), hoàn toàn không đồng nghĩa với việc *"ngu ngốc"* (Inference).\n- **Lời nói của AI Bạn Học:** *"Cảm ơn cậu... Cậu nói đúng, tớ đã quá vội vã tự dán nhãn bản thân. Nghe cậu nói tớ thấy nhẹ lòng hơn nhiều."*`;
+                    } else if (hasEmpathyKeyword) {
+                        return `🎯 **AI Coach Phân Tích Lắng Nghe:**\n\n- **Đánh giá lắng nghe:** ⭐⭐⭐ (Tốt!)\n- **Nhận xét:** Lời nói của bạn rất ấm áp và xoa dịu cảm xúc tốt. Hãy thử chỉ ra thêm điểm 5 Toán chỉ là kết quả tạm thời để bạn bớt tự dán nhãn bản thân nhé!`;
+                    } else {
+                        return `🎯 **AI Coach Phân Tích Lắng Nghe:**\n\n- **Nhận xét:** Phản hồi của bạn hơi mang tính vội vã đưa ra lời khuyên. Khi ai đó đang tổn thương, hãy lắng nghe và xoa dịu cảm xúc của họ trước khi dạy họ cách làm nhé!`;
+                    }
+                } else if (listeningScenarioId === 2) {
+                    if (hasEmpathyKeyword) {
+                        return `🎯 **AI Coach Phân Tích Lắng Nghe:**\n\n- **Đánh giá lắng nghe:** ⭐⭐⭐⭐⭐ (Ấn tượng!)\n- **Nhận xét:** Bạn đã công nhận sự áp lực và gánh nặng của nhóm trưởng. Lời phản hồi giúp hạ nhiệt xung đột rất tốt!\n- **Phản hồi từ Nhóm Trưởng:** *"Cảm ơn cậu đã hiểu cho tớ! Thật sự tớ căng thẳng quá nên mới gắt gỏng như vậy."*`;
+                    } else {
+                        return `🎯 **AI Coach Phân Tích Lắng Nghe:**\n\n- **Nhận xét:** Nhóm trưởng đang rất tức giận. Hãy bắt đầu bằng câu *"Tớ hiểu cậu đang rất mệt mỏi và bức xúc..."* để giúp người nói cảm thấy được thấu hiểu.`;
+                    }
+                } else {
+                    return `🎯 **AI Coach Phân Tích Lắng Nghe:**\n\n- **Đánh giá thấu cảm:** Bạn đang thực hành lắng nghe rất tích cực! Hãy tiếp tục đặt những câu hỏi gợi mở như: *"Cậu đã thử chia sẻ nhẹ nhàng nguyện vọng này với bố mẹ chưa?"*`;
+                }
+            }
+
+            // 3. ARENA DEBATE AI
+            else {
+                if (wordCount < 6) {
+                    return `**AI Phản Pháo:** Câu trả lời của bạn quá ngắn! Lập luận chưa có chiều sâu.\n\n👉 **Thử thách AI:** Bạn hãy bổ sung thêm **1 lý do rõ ràng** và **1 ví dụ thực tế** để làm vững luận điểm này!`;
+                } else if (textLower.includes("vì") || textLower.includes("bởi vì") || textLower.includes("dẫn chứng") || textLower.includes("ví dụ")) {
+                    return `**AI Phản Pháo:** Luận điểm của bạn rất sắc bén! Bạn đã biết dùng cấu trúc lập luận logic kèm lý do.\n\n**Góc nhìn phản đối:** Tuy nhiên, nếu nhìn ở chiều ngược lại, giải pháp này có thể gây tác dụng phụ như gánh nặng quản lý hoặc hạn chế sự chủ động của học sinh. Bạn nghĩ sao về bất cập này?`;
+                } else {
+                    return `**AI Phản Pháo:** Ý kiến thú vị! Tuy nhiên tôi vẫn chưa hoàn toàn bị thuyết phục.\n\nBạn có thể minh họa bằng 1 ví dụ cụ thể xảy ra trong môi trường học đường không?`;
+                }
+            }
+        }
+
+        function handleUserSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('user-input');
+            const val = input.value.trim();
+            if(!val) return;
+
+            appendMessage('user', val);
+            input.value = '';
+
+            // Show temporary typing indicator
+            setTimeout(() => {
+                const responseText = generateDynamicAIResponse(val);
+                appendMessage('ai', responseText);
+            }, 800);
+        }
+
+        function viewStudentReport(name, score1, score2, score3) {
+            document.getElementById('report-student-name').innerText = `Báo cáo học sinh: ${name}`;
+            document.getElementById('student-report-modal').classList.remove('hidden');
+        }
+
+        function alertModal(title, msg) {
+            document.getElementById('gen-modal-title').innerText = title;
+            document.getElementById('gen-modal-msg').innerText = msg;
+            document.getElementById('general-modal').classList.remove('hidden');
+        }
+
+        selectScenario(1, 'Thuyết phục một người bạn từ bỏ thói quen sử dụng điện thoại quá nhiều.');
+    </script>
+</body>
+</html>
